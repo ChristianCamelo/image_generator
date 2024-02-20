@@ -143,11 +143,12 @@ async function CheckResults() {
 		
 		//ACTUALIZAR LOS PROMPTS HISTORY
 		for(let i=1;i<4;i++){
+			console.log("CheckResults: Leido el prompt "+i+" contenido: "+result[i]['id'])
 			if(result[i]!==""){
 				promptsHistory.push(new Prompt(i,result[i]));
 			}
 		}
-		console.log("Check Results: Prompt History " + JSON.stringify(promptsHistory));
+		//console.log("Check Results: Prompt History " + JSON.stringify(promptsHistory));
 
 		const data = { status: true, progress: "100", image: image }
 		return (data);

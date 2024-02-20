@@ -3,10 +3,10 @@ import { getPromptHistory } from "../dependencies/commands"
 import History from "./History";
 
 export default function Panel(){
-
-    const historial = getPromptHistory();
+    const historial=[]
     console.log("Panel: Desde panel se leyeron: " + JSON.stringify(historial))
-    
+
+
     return(
         <div className="Panel">
             <h3>Última generación</h3>

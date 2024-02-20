@@ -8,6 +8,7 @@ import Buscador from "./Buscador";
 import Loader from "./Loader";
 
 export default function Canvas() {
+
     return (
         <div className="Canvas">
             <div className="Interactions">

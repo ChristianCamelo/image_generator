@@ -9,6 +9,7 @@ import { postImagine, getResults, getStatus } from "../dependencies/commands.js"
 
 export default function Filtros() {
 
+    getStatus();
     useEffect(() => {
         async function handleFormSubmit(e) {
             e.preventDefault();
