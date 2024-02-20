@@ -66,11 +66,12 @@ function readTags() {
 
 async function GetDiscordChannelMessages() {
 	try {
+		console.log('GetDiscordChannelMessages: Haciendo fecth de los mensajes')
 		const response = await axios.get(
 			`${discordAPI}/channels/${channel}/messages`,
 			{ headers: DiscordHeaders(discord) }
 		);
-		//console.log(response.data);
+		//console.log("GetDiscordChannelMessages: recibido "+response.data);
 		return response.data;
 	} catch (error) {
 		console.error('GetDiscordChannelMessages: Error al obtener mensajes del canal:', error);
@@ -140,17 +141,9 @@ async function CheckResults() {
 		messageId = result[0]['id']; // obtiene el id del mensaje
 		const image = result[0]['attachments'][0]['url'];
 		customId = result[0]['components'][0]['components'][0]['custom_id'].split("::").pop(); // obtiene el hash de la imagen
-		
-		//ACTUALIZAR LOS PROMPTS HISTORY
-		for(let i=1;i<4;i++){
-			console.log("CheckResults: Leido el prompt "+i+" contenido: "+result[i]['id'])
-			if(result[i]!==""){
-				promptsHistory.push(new Prompt(i,result[i]));
-			}
-		}
+
 		//console.log("Check Results: Prompt History " + JSON.stringify(promptsHistory));
-
-		const data = { status: true, progress: "100", image: image }
+		const data = { status: true, progress: "100", image: image, result: result }
 		return (data);
 	} else {
 		// VERIFICA EL ESTADO DE LA GENERACION
@@ -160,39 +153,12 @@ async function CheckResults() {
 		if (match && match[1]) {
 			valor = match[1];
 		}
-		const data = { status: false, progress: valor, image: "" }
+		const data = { status: false, progress: valor, image: "" , result: result };
 		//console.log(data)
 		return (data);
 	}
 }
 
-
-
-async function CheckResultsImage(message) {
-	var result = await GetDiscordChannelMessages();
-	if (result[0]['components'].length !== 0) {
-		//  GENERACION TERMINADA , IMAGEN 100%
-		// ALMACENA LOS VALORES DE LA IMAGEN PARA OBTENER IMAGEN Y VARIACION
-		messageId = result[0]['id']; // obtiene el id del mensaje
-		const image = result[0]['attachments'][0]['url'];
-		customId = result[0]['components'][0]['components'][0]['custom_id'].split("::").pop(); // obtiene el hash de la imagen
-		//console.log(messageId + "//" + customId);
-		const data = { status: true, progress: "100", image: image }
-		//console.log(data)
-		return (data);
-	} else {
-		// VERIFICA EL ESTADO DE LA GENERACION
-		const regex = /\((\d+)%\)/;
-		const match = result[0]['content'].match(regex);
-		let valor = "0";
-		if (match && match[1]) {
-			valor = match[1];
-		}
-		const data = { status: false, progress: valor, image: "" }
-		//console.log(data)
-		return (data);
-	}
-}
 
 async function GetInteraction(option, image) {
 	try {

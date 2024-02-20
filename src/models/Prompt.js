@@ -2,7 +2,7 @@ class Prompt{
     
     constructor(index, data){
         this.rawPrompt = data['content'];
-        this.prompt = this.rawPrompt.split(" ")[0];
+        this.prompt = this.rawPrompt.split(" ")[0].split("**")[1];
         this.image = data['attachments'][0]['url'];
         this.messageId = data['id'];
         this.hashedId = data['components'][0]['components'][0]['custom_id'].split("::").pop();

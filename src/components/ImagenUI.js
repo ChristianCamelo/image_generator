@@ -45,6 +45,7 @@ export default function ImagenUI({ imagen }) {
                 {/* Agrega el controlador de eventos onClick a cada botón */}
                 {/* <button type="button" onClick={() => handleButtonClick(1)}>A</button> */}
                 <button type="button" onClick={() => handleButtonClick(2)}>B</button>
+                
             </form>
         </div>
     );

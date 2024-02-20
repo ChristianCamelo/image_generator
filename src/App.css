@@ -80,12 +80,14 @@ p{
   padding: 10px;
   display: flex;
   box-sizing: border-box;
+  justify-content: space-between;
   align-items: center;
   flex-direction: row;
   background-color: var(--primary-color-50);
 }
 
 .Workspace {
+  max-width: 1200px;
   width: 100%;
   height: fit-content;
   justify-content: space-around;
@@ -152,7 +154,7 @@ p{
 }
 
 .Resultado img {
-  max-width: 1200px;
+
   width: 100%;
   display: inline-block;
   border-radius: 5px;
@@ -218,7 +220,8 @@ p{
 }
 
 .Panel div{
-  height: 100%;
+  height: fit-content;
+  width: 100%;
   position: relative;
 }
 
