@@ -1,17 +1,20 @@
-import logo from './logo.svg';
-import Canvas from './components/Canvas';
-import Header from './components/Header';
-import Buscador from './components/Buscador';
+
+import Login_Page from './pages/login_page';
+import Workspace_Page from './pages/workspace_page';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
+
 import './App.css';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <Header/>
-      <div className='container'>
-        <Canvas/>
-      </div>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="home" element={<Login_Page/>}></Route>
+        <Route path="workspace" element={<Workspace_Page/>}></Route>
+        <Route path="*" element={<Navigate to="/home" />} />
+      </Routes>
+    </Router>
   );
 }
 

@@ -12,3 +12,72 @@
         "custom_id": "MJ::JOB::variation::1::4537bfa8-3de9-4819-b4fe-5ca35d7dae3a"
     }
 }
+
+Canvas : CheckResults: Leido el prompt 2 id: [
+    {
+        "type": 1,
+        "components": [
+            {
+                "type": 2,
+                "custom_id": "MJ::JOB::upsample::1::da5eb48d-1d65-4ec5-91a8-32a2b07d8aa5",
+                "style": 2,
+                "label": "U1"
+            },
+            {
+                "type": 2,
+                "custom_id": "MJ::JOB::upsample::2::da5eb48d-1d65-4ec5-91a8-32a2b07d8aa5",
+                "style": 2,
+                "label": "U2"
+            },
+            {
+                "type": 2,
+                "custom_id": "MJ::JOB::upsample::3::da5eb48d-1d65-4ec5-91a8-32a2b07d8aa5",
+                "style": 2,
+                "label": "U3"
+            },
+            {
+                "type": 2,
+                "custom_id": "MJ::JOB::upsample::4::da5eb48d-1d65-4ec5-91a8-32a2b07d8aa5",
+                "style": 1,
+                "label": "U4"
+            },
+            {
+                "type": 2,
+                "custom_id": "MJ::JOB::reroll::0::da5eb48d-1d65-4ec5-91a8-32a2b07d8aa5::SOLO",
+                "style": 2,
+                "emoji": {
+                    "name": "🔄"
+                }
+            }
+        ]
+    },
+    {
+        "type": 1,
+        "components": [
+            {
+                "type": 2,
+                "custom_id": "MJ::JOB::variation::1::da5eb48d-1d65-4ec5-91a8-32a2b07d8aa5",
+                "style": 2,
+                "label": "V1"
+            },
+            {
+                "type": 2,
+                "custom_id": "MJ::JOB::variation::2::da5eb48d-1d65-4ec5-91a8-32a2b07d8aa5",
+                "style": 2,
+                "label": "V2"
+            },
+            {
+                "type": 2,
+                "custom_id": "MJ::JOB::variation::3::da5eb48d-1d65-4ec5-91a8-32a2b07d8aa5",
+                "style": 2,
+                "label": "V3"
+            },
+            {
+                "type": 2,
+                "custom_id": "MJ::JOB::variation::4::da5eb48d-1d65-4ec5-91a8-32a2b07d8aa5",
+                "style": 2,
+                "label": "V4"
+            }
+        ]
+    }
+]

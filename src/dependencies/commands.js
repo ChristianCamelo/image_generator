@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { Tolgee, DevTools, TolgeeProvider, FormatSimple } from "@tolgee/react";
-import Prompt from '../models/Prompt';
+import { useNavigate } from "react-router-dom";
 
 function getNonce() {
 	const range = 99999999999999999 - 1 + 1;
@@ -12,13 +11,11 @@ function getSession() {
 	return (new Date()).getTime()
 }
 
+const serverURL = "http://localhost:8080";
 
 const discordAPI = `https://discord.com/api/v10`;
 const MidjourneyAppId = `936929561302675456`;
 const MidjourneyVersion = `1166847114203123795`;
-
-const toggleAPI = 'https://app.tolgee.io';
-const toggleToken = 'tgpak_gu2dinc7oa4wcodvnbswcz3km5vhi2digz2ggzdsgbtg233mn4';
 
 const discord = `MTEzMDc0MzQ4OTU3MTg2ODc1NA.GqeO59.wJYkjErhNyhtshTGNvf6MR0-uFYy1xAcP4Z02M`;
 const server = `1204813483431034911`;
@@ -28,8 +25,6 @@ const promptparams = "realistic image, by canon 5 R.High resolution. Photorealis
 let preprompt = [];
 let promptsHistory = [];
 //console.info({ discord, server, channel, imagine_prompt });
-
-const styles = ["realistic", " ", " "]
 
 var messageId = ""
 var customId = ""
@@ -64,148 +59,84 @@ function readTags() {
 	return prepromptString;
 }
 
-async function GetDiscordChannelMessages() {
-	try {
-		console.log('GetDiscordChannelMessages: Haciendo fecth de los mensajes')
-		const response = await axios.get(
-			`${discordAPI}/channels/${channel}/messages`,
-			{ headers: DiscordHeaders(discord) }
-		);
-		//console.log("GetDiscordChannelMessages: recibido "+response.data);
-		return response.data;
-	} catch (error) {
-		console.error('GetDiscordChannelMessages: Error al obtener mensajes del canal:', error);
-		throw error;
-	}
+async function Login(name, pass, callback) {
+    let data = JSON.stringify({
+        "name": name,
+        "pwd": pass
+    });
+    let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: serverURL + '/login',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: data
+    };
+    try {
+        const response = await axios.request(config);
+        const status = response.data.status;
+		const token = response.data.token;
+        callback(status,token); // Llamar al callback con el estado
+    } catch (error) {
+        console.error(error);
+        callback(-1); // Llamar al callback con un código de error
+    }
 }
 
-async function PostDiscordImagine(prompt) {
-	try {
-		const nonce = await getNonce();
-		const session_id = await getSession();
-		const fullprompt = prompt.concat(" ", readTags(), postpromt, promptparams);
 
-		const response = await axios.post(
-			`${discordAPI}/interactions`,
-			{
-				"type": 2,
-				"application_id": MidjourneyAppId,
-				"guild_id": server,
-				"channel_id": channel,
-				"session_id": session_id,
-				"data": {
-					"version": MidjourneyVersion,
-					"id": "938956540159881230",
-					"name": "imagine",
-					"type": 1,
-					"options": [
-						{
-							"type": 3,
-							"name": "prompt",
-							"value": fullprompt
-						}
-					],
-					"application_command": {
-						"id": "938956540159881230",
-						"type": 1,
-						"application_id": "936929561302675456",
-						"version": MidjourneyVersion,
-						"name": "imagine"
-					},
-					"attachments": []
-				},
-				"nonce": nonce,
-				"analytics_location": "slash_ui"
-			},
-			{ headers: DiscordHeaders(discord) }
-		);
+async function GetDiscordChannelMessages(token, callback) {
+	console.log("enviando token ",token)
+    let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: serverURL + '/messages',
+        headers: {
+			'Authorization':token,
+            'Content-Type': 'application/json'
+        },
+    };
+    try {
+        const response = await axios.request(config);
+		const messages = response.data;
+        callback(messages); // Llamar al callback con el estado
+    } catch (error) {
+        console.error(error);
+        callback(-1); // Llamar al callback con un código de error
+    }
+}
 
-		if (response.status === 204) {
-			console.log('PostDiscordImagine: La solicitud fue exitosa pero no hay contenido.');
-			return;
-		} else if (!response.ok) {
-			throw new Error('PostDiscordImagine: PostDiscordImagineLa solicitud no fue exitosa: ' + response.statusText);
-		}
-		return response;
-	} catch (error) {
-		console.error('PostDiscordImagine: Error en la solicitud de Discord:', error);
-		throw error;
-	}
+async function PostDiscordImagine( token, prompt, callback) {
+	console.log("enviando pormpt ",token)
+	let data = JSON.stringify({
+        "prompt": prompt,
+    });
+	let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: serverURL + '/messages',
+        headers: {
+			'Authorization': token,
+            'Content-Type': 'application/json'
+        },
+		data: data
+    };
+    try {
+        const response = await axios.request(config);
+		const messages = response.data;
+        callback(messages); // Llamar al callback con el estado
+    } catch (error) {
+        console.error(error);
+        callback(-1); // Llamar al callback con un código de error
+    }
+
 }
 
 async function CheckResults() {
-	var result = await GetDiscordChannelMessages();
-	if (result[0]['components'].length !== 0) {
-		//  GENERACION TERMINADA , IMAGEN 100%
-		// ALMACENA LOS VALORES DE LA IMAGEN PARA OBTENER IMAGEN Y VARIACION
-		messageId = result[0]['id']; // obtiene el id del mensaje
-		const image = result[0]['attachments'][0]['url'];
-		customId = result[0]['components'][0]['components'][0]['custom_id'].split("::").pop(); // obtiene el hash de la imagen
-
-		//console.log("Check Results: Prompt History " + JSON.stringify(promptsHistory));
-		const data = { status: true, progress: "100", image: image, result: result }
-		return (data);
-	} else {
-		// VERIFICA EL ESTADO DE LA GENERACION
-		const regex = /\((\d+)%\)/;
-		const match = result[0]['content'].match(regex);
-		let valor = "0";
-		if (match && match[1]) {
-			valor = match[1];
-		}
-		const data = { status: false, progress: valor, image: "" , result: result };
-		//console.log(data)
-		return (data);
-	}
 }
 
 
 async function GetInteraction(option, image) {
-	try {
-		const nonce = await getNonce();
-		const session_id = await getSession();
-
-		// OPCION 1 VARIAR, OPCION 2 ESCALAR
-		const variationSetup = "MJ::JOB::variation::";
-		const upsampleSetup = "MJ::JOB::upsample::";
-		var picked = "";
-
-		if (option === 1) {
-			picked = variationSetup;
-		}
-		if (option === 2) {
-			picked = upsampleSetup;
-		}
-
-		const response = await axios.post(
-			`${discordAPI}/interactions`,
-			{
-				"type": 3,
-				"nonce": nonce,
-				"guild_id": server,
-				"channel_id": channel,
-				"message_flags": 0,
-				"message_id": messageId,
-				"application_id": MidjourneyAppId,
-				"session_id": session_id,
-				"data": {
-					"component_type": 2,
-					"custom_id": picked + image + "::" + customId
-				}
-			},
-			{ headers: DiscordHeaders(discord) }
-		);
-		if (response.status === 204) {
-			console.log('GetInteraction: La solicitud fue exitosa pero no hay contenido.');
-			return;
-		} else if (!response.ok) {
-			throw new Error('GetInteraction: La solicitud no fue exitosa: ' + response.statusText);
-		}
-		return response;
-	} catch (error) {
-		console.error('GetInteraction: Error en la solicitud de Discord:', error);
-		throw error;
-	}
 }
 
 function splitHash(hashStr) {
@@ -215,9 +146,12 @@ function splitHash(hashStr) {
 	return { custom_id: customId, MJ: mj };
 }
 
-export function getPromptHistory(){ return promptsHistory };
+export function getPromptHistory() { return promptsHistory };
 export function getStatus() { return CheckResults() };
 export function getInteraction(option, image) { return GetInteraction(option, image) };
-export function getResults() { return GetDiscordChannelMessages() };
-export function postImagine(prompt) { return PostDiscordImagine(prompt) };
+
+export function getMessages(token, callback) { return GetDiscordChannelMessages(token, callback) };
+export function postImagine(token, prompt, callback) { return PostDiscordImagine(token, prompt, callback) };
+export function getLogin(name, pwd, callback) { return Login(name, pwd, callback) }
+
 export function addTag(tag) { return AddPromptTag(tag) }

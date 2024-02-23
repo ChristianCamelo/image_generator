@@ -3,7 +3,7 @@ import Prompt from "../models/Prompt";
 
 export default function History({prompt}) {
 
-    console.log("History: Index:", prompt.index, " Prompt:", prompt);
+    //console.log("History: Index:", prompt.index, " Prompt:", prompt);
 
     return (
         <div className="History">
