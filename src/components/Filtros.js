@@ -42,6 +42,17 @@ export default function Filtros() {
                 </div>
                 <p>Evitar</p>
                 <textarea id="prompt" type="text" name="prompt" placeholder="Nubes..." />
+                <p>Relación de aspecto</p>
+                <select>
+                    <option>1:1</option>
+                    <option>2:3</option>
+                    <option>3:2</option>
+                    <option>4:7</option>
+                    <option>5:4</option>
+                    <option>7:4</option>
+                    <option>9:16</option>
+                    <option>16:9</option>
+                </select>
                 <button type="submit">Go</button>
             </form>
         </div>

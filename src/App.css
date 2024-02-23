@@ -78,6 +78,7 @@ p{
   height: fit-content;
   flex-direction: row;
   gap: 10px;
+  align-items: center;
 }
 
 .Canvas {
@@ -117,7 +118,7 @@ p{
   background-color: white;
   width: 250px;
   border-radius: 5px;
-  height: 80%;
+  height: fit-content;
   vertical-align: middle;
   min-width: 250px;
   padding: 20px;
@@ -138,6 +139,7 @@ p{
 .Interactions p{
   text-indent: 5px;
   text-align: left;
+  margin-top: 10px;
 }
 
 .Interactions input{
@@ -366,7 +368,7 @@ select {
   border: 1px solid white;
   margin: 5px;
   height: fit-content;
-  width: 100px;
+  width: 100%;
   padding: 7px;
   align-self: center;
 }

@@ -7,7 +7,7 @@ export default function Header() {
             <div className="container">
                 <a><img className="logo" alt="logo" src={placeholder}></img></a>
                 <div>
-                    <p>Bienvenido <strong>Jose Joaquin</strong></p>
+                    <p>Bienvenido <strong id="user-name"></strong></p>
                     <button type="submit">Salir</button>
                 </div>
             </div>

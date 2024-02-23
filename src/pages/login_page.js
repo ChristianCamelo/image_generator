@@ -13,13 +13,13 @@ export default function Login_Page() {
         // Aquí puedes hacer lo que necesites con user y pwd, por ejemplo, llamar a una función para iniciar sesión
         console.log("Usuario:", user);
         console.log("Contraseña:", pwd);
-
         // Llama a la función getLogin con los valores de usuario y contraseña
         getLogin(user, pwd, function(status,token){
             console.log(status,token)
             switch(status){
 				case 200:   document.getElementById("error-login").innerHTML = "";
-                            document.cookie = "token="+token;                
+                            document.cookie = "token="+token;  
+                            document.cookie = "user="+user;                  
                             navigate('/workspace');
                     break;
 				case 201 : document.getElementById("error-login").innerHTML = "El usuario no existe, verifique los datos e intente de nuevo.";

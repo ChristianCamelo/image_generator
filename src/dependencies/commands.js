@@ -60,79 +60,99 @@ function readTags() {
 }
 
 async function Login(name, pass, callback) {
-    let data = JSON.stringify({
-        "name": name,
-        "pwd": pass
-    });
-    let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: serverURL + '/login',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: data
-    };
-    try {
-        const response = await axios.request(config);
-        const status = response.data.status;
+	let data = JSON.stringify({
+		"name": name,
+		"pwd": pass
+	});
+	let config = {
+		method: 'post',
+		maxBodyLength: Infinity,
+		url: serverURL + '/login',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		data: data
+	};
+	try {
+		const response = await axios.request(config);
+		const status = response.data.status;
 		const token = response.data.token;
-        callback(status,token); // Llamar al callback con el estado
-    } catch (error) {
-        console.error(error);
-        callback(-1); // Llamar al callback con un código de error
-    }
+		callback(status, token); // Llamar al callback con el estado
+	} catch (error) {
+		console.error(error);
+		callback(-1); // Llamar al callback con un código de error
+	}
 }
 
 
 async function GetDiscordChannelMessages(token, callback) {
-	console.log("enviando token ",token)
-    let config = {
-        method: 'get',
-        maxBodyLength: Infinity,
-        url: serverURL + '/messages',
-        headers: {
-			'Authorization':token,
-            'Content-Type': 'application/json'
-        },
-    };
-    try {
-        const response = await axios.request(config);
-		const messages = response.data;
-        callback(messages); // Llamar al callback con el estado
-    } catch (error) {
-        console.error(error);
-        callback(-1); // Llamar al callback con un código de error
-    }
-}
-
-async function PostDiscordImagine( token, prompt, callback) {
-	console.log("enviando pormpt ",token)
-	let data = JSON.stringify({
-        "prompt": prompt,
-    });
+	console.log("enviando token ", token)
 	let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: serverURL + '/messages',
-        headers: {
+		method: 'get',
+		maxBodyLength: Infinity,
+		url: serverURL + '/messages',
+		headers: {
 			'Authorization': token,
-            'Content-Type': 'application/json'
-        },
-		data: data
-    };
-    try {
-        const response = await axios.request(config);
+			'Content-Type': 'application/json'
+		},
+	};
+	try {
+		const response = await axios.request(config);
 		const messages = response.data;
-        callback(messages); // Llamar al callback con el estado
-    } catch (error) {
-        console.error(error);
-        callback(-1); // Llamar al callback con un código de error
-    }
+		callback(messages); // Llamar al callback con el estado
+	} catch (error) {
+		console.error(error);
+		callback(-1); // Llamar al callback con un código de error
+	}
+}
+
+async function PostDiscordImagine(token, prompt, callback) {
+	console.log("enviando Prompt ", prompt)
+
+	let config = {
+		method: 'post',
+		maxBodyLength: Infinity,
+		url: serverURL + '/messages',
+		headers: {
+			'Authorization': token,
+			'Content-Type': 'application/json'
+		},
+		data: {
+			prompt: prompt
+		}
+	};
+	try {
+		const response = await axios.request(config);
+		const messages = response.data;
+		callback(messages); // Llamar al callback con el estado
+	} catch (error) {
+		console.error(error);
+		callback(-1); // Llamar al callback con un código de error
+	}
 
 }
 
-async function CheckResults() {
+async function getStatusPrompt(token) {
+	var result = await GetDiscordChannelMessages(token);
+	if (result[0]['components'].length !== 0) {
+		//  GENERACION TERMINADA , IMAGEN 100%
+		messageId = result[0]['id'];
+		const image = result[0]['attachments'][0]['url'];
+		customId = result[0]['components'][0]['components'][0]['custom_id'].split("::")[-1]; // obtiene el hash de la imagen
+		if(customId==="SOLO")customId = result[0]['components'][0]['components'][0]['custom_id'].split("::")[-2]; // obtiene el hash de la imagen
+		const data = { status: true, progress: "100", image: image, result: result }
+		return (data);
+	} else {
+		// VERIFICA EL ESTADO DE LA GENERACION
+		const regex = /\((\d+)%\)/;
+		const match = result[0]['content'].match(regex);
+		let valor = "0";
+		if (match && match[1]) {
+			valor = match[1];
+		}
+		const data = { status: false, progress: valor, image: "", result: result };
+		return (data);
+	}
 }
 
 
@@ -147,9 +167,10 @@ function splitHash(hashStr) {
 }
 
 export function getPromptHistory() { return promptsHistory };
-export function getStatus() { return CheckResults() };
 export function getInteraction(option, image) { return GetInteraction(option, image) };
 
+
+export function getStatus(token) { return getStatusPrompt(token) };
 export function getMessages(token, callback) { return GetDiscordChannelMessages(token, callback) };
 export function postImagine(token, prompt, callback) { return PostDiscordImagine(token, prompt, callback) };
 export function getLogin(name, pwd, callback) { return Login(name, pwd, callback) }
