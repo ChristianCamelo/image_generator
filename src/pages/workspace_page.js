@@ -1,22 +1,33 @@
-import Canvas from "../components/Canvas";
 import Header from "../components/Header";
-import { useEffect } from "react";
-import { getMessages, postImagine, getStatus } from "../dependencies/commands";
+import Canvas from "../components/Canvas";
+import { useEffect, useState } from "react";
+import { getMessages, postImagine, getStatus, buildImages } from "../dependencies/commands";
 
 export default function Workspace_Page() {
 
-    let token =""
-    let user = ""
+    const [token, setToken] = useState("");
+    const [user, setUser] = useState("");
+    const [prompts, setPrompts] = useState([]);
 
     useEffect(() => {
         if (!document.cookie.split(';').length === 2) {
             window.location.href = '/home';
         } else {
-            token = getCookie("token");
-            user = getCookie("user");
-            document.getElementById("user-name").innerHTML = getCookie("user");
+            const tokenValue = getCookie("token");
+            const userValue = getCookie("user");
+            setToken(tokenValue);
+            setUser(userValue);
+            document.getElementById("prompt-input").onSubmit=postPrompt();
+            document.getElementById("user-name").innerHTML = userValue;
+            document.getElementById("error-prompt").style.display = "none";
         }
     }, []);
+
+    useEffect(() => {
+        if (token !== "") {
+            getChat();
+        }
+    }, [token]);
 
     function getCookie(name) {
         const cookieValue = document.cookie
@@ -27,29 +38,38 @@ export default function Workspace_Page() {
     }
 
     function getChat() {
-        console.log(token)
-        getMessages(token, (messages) => {
-            console.log("Front recibe: ", messages)
+        console.log("getChat: token: ", token);
+        getMessages(token, async (messages) => {
+            const newPrompts = await buildImages(messages);
+            setPrompts(newPrompts);
         })
     }
 
     function postPrompt() {
-        const prompt = "hola";//document.getElementById("prompt-input").value;
-        postImagine(token, prompt,
-            getMessages(token, (messages) => {
-                console.log("Front recibe: ", messages)
-            }))
-    }
-
-    function checkLastPrompt() {
+        let data = {};
+        if (document.getElementById("prompt").value !== "") {
+            data.prompt = document.getElementById("prompt").value;
+            document.getElementById("error-prompt").style.display = "none";
+            if (document.getElementById("negative").value !== "") {
+                data.negative = document.getElementById("negative").value;
+            }
+            data.aspect = document.getElementById("aspect").value;
+            if (!data.negative) {
+                data.negative = "";
+            }
+            postImagine(token, data, () =>
+                getMessages(token, function (messages) {
+                    console.log("Front recibe: ", messages)
+                }))
+        } else {
+            document.getElementById("error-prompt").style.display = "block";
+        }
     }
 
     return (
         <div className="container">
-            <button onClick={getChat}>Obtener mensajes</button>
-            <button onClick={postPrompt}>Enviar prompt</button>
-            <Header />
-            <Canvas />
+            <Header/>
+            <Canvas prompts={prompts} />
         </div>
     );
 }

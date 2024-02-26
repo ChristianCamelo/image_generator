@@ -1,8 +1,6 @@
 import React from "react";
 import Tag from "./Tag";
-import Buscador from "./Buscador";
 import axios from "axios";
-
 import { useEffect } from "react";
 import { postImagine, getResults, getStatus } from "../dependencies/commands.js"; // Asegúrate de importar las funciones necesarias
 
@@ -14,7 +12,8 @@ export default function Filtros() {
             <form id="prompt-input">
                 <h3>Herramientas</h3>
                 <p>Descripción</p>
-                <textarea id="prompt" type="text" name="prompt" placeholder="Personas teniendo un meeting de ..." />
+                <p id="error-prompt">Porfavor ingresa una descripción para la imagen.</p>
+                <textarea required id="prompt" type="text" name="prompt" placeholder="Personas teniendo un meeting de ..." />
                 <p>Creatividad</p>
                 <input type="range" min="0" max="100"></input>
                 <p>Calidad</p>
@@ -41,17 +40,17 @@ export default function Filtros() {
                     <Tag etiqueta="Moda"></Tag>
                 </div>
                 <p>Evitar</p>
-                <textarea id="prompt" type="text" name="prompt" placeholder="Nubes..." />
+                <textarea id="negative" type="text" name="prompt" placeholder="Nubes..." />
                 <p>Relación de aspecto</p>
-                <select>
-                    <option>1:1</option>
-                    <option>2:3</option>
-                    <option>3:2</option>
-                    <option>4:7</option>
-                    <option>5:4</option>
-                    <option>7:4</option>
-                    <option>9:16</option>
-                    <option>16:9</option>
+                <select required id="aspect">
+                    <option value="1:1">1:1</option>
+                    <option value="2:3">2:3</option>
+                    <option value="3:2">3:2</option>
+                    <option value="4:7">4:7</option>
+                    <option value="5:4">5:4</option>
+                    <option value="7:4">7:4</option>
+                    <option value="9:16">9:16</option>
+                    <option value="16:9">16:9</option>
                 </select>
                 <button type="submit">Go</button>
             </form>

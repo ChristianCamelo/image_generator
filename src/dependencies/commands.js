@@ -1,43 +1,20 @@
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-
-function getNonce() {
-	const range = 99999999999999999 - 1 + 1;
-	const value = Math.floor(Math.random() * range) + 1;
-	return value.toString();
-}
-
-function getSession() {
-	return (new Date()).getTime()
-}
+import Prompt from '../models/Prompt';
+import Imagen from '../components/Imagen';
 
 const serverURL = "http://localhost:8080";
 
-const discordAPI = `https://discord.com/api/v10`;
-const MidjourneyAppId = `936929561302675456`;
-const MidjourneyVersion = `1166847114203123795`;
-
-const discord = `MTEzMDc0MzQ4OTU3MTg2ODc1NA.GqeO59.wJYkjErhNyhtshTGNvf6MR0-uFYy1xAcP4Z02M`;
-const server = `1204813483431034911`;
-const channel = `1204813526883897386`;
 const postpromt = " aqua colors, ash gray, cyan colors, silver colors, metal materials, marketing ad";
 const promptparams = "realistic image, by canon 5 R.High resolution. Photorealistic lighting, 8K. Super Resolution, Megapixel, Pro Photo | 8k 35mm, 8k, depth of field --iw 0.5 --v 6.0 --ar 16:9"
 let preprompt = [];
 let promptsHistory = [];
-//console.info({ discord, server, channel, imagine_prompt });
 
 var messageId = ""
 var customId = ""
 
 const brandColorsB = " aqua colors, ash gray, cyan colors, silver colors, metal materials, industry work, marketing ad";
 const brandColorsC = " aqua colors, ash gray, cyan colors, silver colors, metal materials, industry work, marketing ad";
-
-
-const DiscordHeaders = (token) => ({
-	"Content-Type": "application/json",
-	"Accept": 'application/json',
-	"Authorization": token
-});
 
 function AddPromptTag(tag) {
 	console.log(tag)
@@ -84,6 +61,18 @@ async function Login(name, pass, callback) {
 	}
 }
 
+async function BuildImages(data) {
+    console.log("BuildImages ", data.message);
+    const images = data.message.slice(0, 5);
+    const prompts = [];
+    for (let i = 0; i < images.length; i++) {
+        const prompt = new Prompt(i, images[i]);
+        prompts.push(prompt);
+    }
+    console.log(JSON.stringify(prompts));
+    return prompts;
+}
+
 
 async function GetDiscordChannelMessages(token, callback) {
 	console.log("enviando token ", token)
@@ -106,8 +95,8 @@ async function GetDiscordChannelMessages(token, callback) {
 	}
 }
 
-async function PostDiscordImagine(token, prompt, callback) {
-	console.log("enviando Prompt ", prompt)
+async function PostDiscordImagine(token, data, callback) {
+	console.log("PostDiscordImagine : datos :", data)
 
 	let config = {
 		method: 'post',
@@ -117,9 +106,7 @@ async function PostDiscordImagine(token, prompt, callback) {
 			'Authorization': token,
 			'Content-Type': 'application/json'
 		},
-		data: {
-			prompt: prompt
-		}
+		data: data
 	};
 	try {
 		const response = await axios.request(config);
@@ -172,7 +159,8 @@ export function getInteraction(option, image) { return GetInteraction(option, im
 
 export function getStatus(token) { return getStatusPrompt(token) };
 export function getMessages(token, callback) { return GetDiscordChannelMessages(token, callback) };
-export function postImagine(token, prompt, callback) { return PostDiscordImagine(token, prompt, callback) };
+export function postImagine(token, data, callback) { return PostDiscordImagine(token, data, callback) };
 export function getLogin(name, pwd, callback) { return Login(name, pwd, callback) }
+export function buildImages(data){return BuildImages(data)}
 
 export function addTag(tag) { return AddPromptTag(tag) }
