@@ -2,7 +2,6 @@ import React from "react";
 import Imagen from "./Imagen";
 
 export default function Panel({ prompts }) {
-    console.log("Prompts recibidos en Panel:", prompts);
 
     return (
         <div className="Panel">

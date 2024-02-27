@@ -4,7 +4,7 @@ import Loader from "./Loader";
 import Imagen from "./Imagen";
 import Panel from "./Panel";
 
-export default function Canvas({ prompts }) {
+export default function Canvas({ prompts, postPrompt,tags ,updateTags}) {
     const [result, setResult] = useState([]);
 
     // Verificar si hay prompts y establecer el primer prompt como resultado
@@ -19,7 +19,7 @@ export default function Canvas({ prompts }) {
     return (
         <div className="Canvas">
             <div className="Interactions">
-                <Filtros />
+                <Filtros postPrompt={postPrompt} tags={tags} updateTags={updateTags}/>
             </div>
             <div className="Workspace">
                 <Loader />

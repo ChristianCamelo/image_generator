@@ -8,6 +8,7 @@ export default function Workspace_Page() {
     const [token, setToken] = useState("");
     const [user, setUser] = useState("");
     const [prompts, setPrompts] = useState([]);
+    const [tags, setTags] = useState([]);
 
     useEffect(() => {
         if (!document.cookie.split(';').length === 2) {
@@ -17,7 +18,6 @@ export default function Workspace_Page() {
             const userValue = getCookie("user");
             setToken(tokenValue);
             setUser(userValue);
-            document.getElementById("prompt-input").onSubmit=postPrompt();
             document.getElementById("user-name").innerHTML = userValue;
             document.getElementById("error-prompt").style.display = "none";
         }
@@ -45,18 +45,36 @@ export default function Workspace_Page() {
         })
     }
 
-    function postPrompt() {
+    function readTags() {
+        const tagsPrompt = 
+        console.log("readTags : ",tagsPrompt)
+        return tagsPrompt;
+    }
+
+    const updateTags = (newTags) => {
+        setTags(newTags);
+    };
+
+    function postPrompt(e) {
+        e.preventDefault();
         let data = {};
         if (document.getElementById("prompt").value !== "") {
             data.prompt = document.getElementById("prompt").value;
+            data.tags = tags.join("$$");
             document.getElementById("error-prompt").style.display = "none";
             if (document.getElementById("negative").value !== "") {
                 data.negative = document.getElementById("negative").value;
             }
-            data.aspect = document.getElementById("aspect").value;
-            if (!data.negative) {
-                data.negative = "";
+            if (document.getElementById("creative").value !== 0) {
+                data.creative = document.getElementById("creative").value;
             }
+            if (document.getElementById("quality").value !== 0) {
+                data.quality = document.getElementById("quality").value;
+            }
+            if (document.getElementById("style").value !== 0) {
+                data.style = document.getElementById("style").value;
+            }
+            data.aspect = document.getElementById("aspect").value;
             postImagine(token, data, () =>
                 getMessages(token, function (messages) {
                     console.log("Front recibe: ", messages)
@@ -69,7 +87,7 @@ export default function Workspace_Page() {
     return (
         <div className="container">
             <Header/>
-            <Canvas prompts={prompts} />
+            <Canvas prompts={prompts} postPrompt={postPrompt} tags={tags} updateTags={updateTags}/>
         </div>
     );
 }

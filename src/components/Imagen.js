@@ -3,20 +3,6 @@ import ImagenUI from "./ImagenUI";
 export default function Imagen({ prompt }) {
     let botones;
 
-    // if (!prompt.unique) {
-    //     botones = (
-    //         <tbody className="Tabla-btn">
-    //             <tr>
-    //                 <td><ImagenUI prompt={prompt} imagen="1"></ImagenUI></td>
-    //                 <td><ImagenUI prompt={prompt}  imagen="2"></ImagenUI></td>
-    //             </tr>
-    //             <tr>
-    //                 <td><ImagenUI prompt={prompt}  imagen="3"></ImagenUI></td>
-    //                 <td><ImagenUI prompt={prompt}  imagen="4"></ImagenUI></td>
-    //             </tr>
-    //         </tbody>
-    //     );
-    // } else {
         const handleExpand = (e) => {
             e.preventDefault();
             const link = document.createElement('a');

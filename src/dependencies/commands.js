@@ -16,24 +16,17 @@ var customId = ""
 const brandColorsB = " aqua colors, ash gray, cyan colors, silver colors, metal materials, industry work, marketing ad";
 const brandColorsC = " aqua colors, ash gray, cyan colors, silver colors, metal materials, industry work, marketing ad";
 
-function AddPromptTag(tag) {
+function AddPromptTag(tag,tags) {
 	console.log(tag)
-	const index = preprompt.findIndex(item => item.etiqueta === tag.etiqueta)
+	const index = tags.findIndex(item => item.etiqueta === tag.etiqueta)
 	console.log(index)
 	if (index === -1) {
-		preprompt.push(tag);
+		tags.push(tag);
 	}
 	else {
-		preprompt.splice(index, 1);
+		tags.splice(index, 1);
 	}
-	console.log(preprompt)
-}
-
-function readTags() {
-
-	const etiquetas = preprompt.map(item => item.etiqueta);
-	const prepromptString = etiquetas.join(", ");
-	return prepromptString;
+	console.log(tags)
 }
 
 async function Login(name, pass, callback) {
@@ -62,15 +55,17 @@ async function Login(name, pass, callback) {
 }
 
 async function BuildImages(data) {
-    console.log("BuildImages ", data.message);
-    const images = data.message.slice(0, 5);
-    const prompts = [];
-    for (let i = 0; i < images.length; i++) {
-        const prompt = new Prompt(i, images[i]);
-        prompts.push(prompt);
-    }
-    console.log(JSON.stringify(prompts));
-    return prompts;
+	console.log("BuildImages ", data.message);
+	const images = data.message.length >= 5 ? data.message.slice(0, 5) : data.message.slice(0, data.message.length-1);
+	const prompts = [];
+	for (let i = 0; i < images.length; i++) {
+		if (data[i]['attachments'].length!==0) {
+			const prompt = new Prompt(i, images[i]);
+			prompts.push(prompt);
+		}
+	}
+	console.log(JSON.stringify(prompts));
+	return prompts;
 }
 
 
@@ -97,7 +92,6 @@ async function GetDiscordChannelMessages(token, callback) {
 
 async function PostDiscordImagine(token, data, callback) {
 	console.log("PostDiscordImagine : datos :", data)
-
 	let config = {
 		method: 'post',
 		maxBodyLength: Infinity,
@@ -126,7 +120,7 @@ async function getStatusPrompt(token) {
 		messageId = result[0]['id'];
 		const image = result[0]['attachments'][0]['url'];
 		customId = result[0]['components'][0]['components'][0]['custom_id'].split("::")[-1]; // obtiene el hash de la imagen
-		if(customId==="SOLO")customId = result[0]['components'][0]['components'][0]['custom_id'].split("::")[-2]; // obtiene el hash de la imagen
+		if (customId === "SOLO") customId = result[0]['components'][0]['components'][0]['custom_id'].split("::")[-2]; // obtiene el hash de la imagen
 		const data = { status: true, progress: "100", image: image, result: result }
 		return (data);
 	} else {
@@ -161,6 +155,5 @@ export function getStatus(token) { return getStatusPrompt(token) };
 export function getMessages(token, callback) { return GetDiscordChannelMessages(token, callback) };
 export function postImagine(token, data, callback) { return PostDiscordImagine(token, data, callback) };
 export function getLogin(name, pwd, callback) { return Login(name, pwd, callback) }
-export function buildImages(data){return BuildImages(data)}
-
-export function addTag(tag) { return AddPromptTag(tag) }
+export function buildImages(data) { return BuildImages(data) }
+export function addTag(tag,tags) { return AddPromptTag(tag,tags) }

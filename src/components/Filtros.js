@@ -5,39 +5,37 @@ import { useEffect } from "react";
 import { postImagine, getResults, getStatus } from "../dependencies/commands.js"; // Asegúrate de importar las funciones necesarias
 
 
-export default function Filtros() {
+export default function Filtros({postPrompt,tags ,updateTags}) {
 
     return (
         <div>
-            <form id="prompt-input">
+            <form id="prompt-input" onSubmit={postPrompt}>
                 <h3>Herramientas</h3>
                 <p>Descripción</p>
                 <p id="error-prompt">Porfavor ingresa una descripción para la imagen.</p>
                 <textarea required id="prompt" type="text" name="prompt" placeholder="Personas teniendo un meeting de ..." />
                 <p>Creatividad</p>
-                <input type="range" min="0" max="100"></input>
+                <input type="range" id="creative" min="0" max="100"></input>
                 <p>Calidad</p>
-                <input type="range" min="0" max="100"></input>
+                <select required id="quality">
+                    <option value="0.25">Baja</option>
+                    <option value="0.5">Media</option>
+                    <option value="1">Alta</option>
+                </select>
+                <p>Estilo</p>
+                <select required id="style">
+                    <option value="1">Fotográfico</option>
+                    <option value="3">Animado</option>
+                    <option value="2">Vectorial</option>
+                </select>
                 <p>Etiquetas</p>
                 <div className="TagContainer">
-                    <Tag etiqueta="War"></Tag>
-                    <Tag etiqueta="WWII"></Tag>
-                    <Tag etiqueta="Mecanico"></Tag>
-                    <Tag etiqueta="Personas"></Tag>
-                    <Tag etiqueta="Calles"></Tag>
-                    <Tag etiqueta="Ciudad"></Tag>
-                    <Tag etiqueta="Amateur"></Tag>
-                    <Tag etiqueta="Cultura"></Tag>
-                    <Tag etiqueta="Tecnologia"></Tag>
-                    <Tag etiqueta="Animales"></Tag>
-                    <Tag etiqueta="Moda"></Tag>
-                    <Tag etiqueta="Calles"></Tag>
-                    <Tag etiqueta="Ciudad"></Tag>
-                    <Tag etiqueta="Amateur"></Tag>
-                    <Tag etiqueta="Cultura"></Tag>
-                    <Tag etiqueta="Tecnologia"></Tag>
-                    <Tag etiqueta="Animales"></Tag>
-                    <Tag etiqueta="Moda"></Tag>
+                    <Tag tags={tags} updateTags={updateTags} etiqueta="Gato"></Tag>
+                    <Tag tags={tags} updateTags={updateTags} etiqueta="Perro"></Tag>
+                    <Tag tags={tags} updateTags={updateTags} etiqueta="Mascota"></Tag>
+                    <Tag tags={tags} updateTags={updateTags} etiqueta="Rinoceronte"></Tag>
+                    <Tag tags={tags} updateTags={updateTags} etiqueta="Pez"></Tag>
+                    <Tag tags={tags} updateTags={updateTags} etiqueta="Ardilla"></Tag>
                 </div>
                 <p>Evitar</p>
                 <textarea id="negative" type="text" name="prompt" placeholder="Nubes..." />
