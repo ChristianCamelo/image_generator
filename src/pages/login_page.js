@@ -10,13 +10,10 @@ export default function Login_Page() {
 
     function handleFormSubmit(e) {
         e.preventDefault();
-        // Aquí puedes hacer lo que necesites con user y pwd, por ejemplo, llamar a una función para iniciar sesión
-        console.log("Usuario:", user);
-        console.log("Contraseña:", pwd);
-        // Llama a la función getLogin con los valores de usuario y contraseña
-        getLogin(user, pwd, function(status,token){
-            console.log(status,token)
-            switch(status){
+        
+        getLogin(user, pwd, function(data,token){
+            console.log(data,token)
+            switch(data.status){
 				case 200:   document.getElementById("error-login").innerHTML = "";
                             document.cookie = "token="+token;  
                             document.cookie = "user="+user;                  

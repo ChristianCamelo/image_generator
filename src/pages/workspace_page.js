@@ -18,6 +18,9 @@ export default function Workspace_Page() {
             const userValue = getCookie("user");
             setToken(tokenValue);
             setUser(userValue);
+            if(userValue==="admin"){
+                window.location.href = '/home';
+            }
             document.getElementById("user-name").innerHTML = userValue;
             document.getElementById("error-prompt").style.display = "none";
         }
@@ -38,7 +41,6 @@ export default function Workspace_Page() {
     }
 
     function getChat() {
-        console.log("getChat: token: ", token);
         getMessages(token, async (messages) => {
             const newPrompts = await buildImages(messages);
             setPrompts(newPrompts);

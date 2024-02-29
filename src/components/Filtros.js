@@ -15,7 +15,7 @@ export default function Filtros({postPrompt,tags ,updateTags}) {
                 <p id="error-prompt">Porfavor ingresa una descripción para la imagen.</p>
                 <textarea required id="prompt" type="text" name="prompt" placeholder="Personas teniendo un meeting de ..." />
                 <p>Creatividad</p>
-                <input type="range" id="creative" min="0" max="100"></input>
+                <input type="range" id="creative" min="0" max="1" step="0.1" ></input>
                 <p>Calidad</p>
                 <select required id="quality">
                     <option value="0.25">Baja</option>

@@ -45,21 +45,20 @@ async function Login(name, pass, callback) {
 	};
 	try {
 		const response = await axios.request(config);
-		const status = response.data.status;
 		const token = response.data.token;
-		callback(status, token); // Llamar al callback con el estado
+		callback(response.data, token); // Llamar al callback con el estado
 	} catch (error) {
 		console.error(error);
-		callback(-1); // Llamar al callback con un código de error
+		callback(error); // Llamar al callback con un código de error
 	}
 }
 
 async function BuildImages(data) {
 	console.log("BuildImages ", data.message);
-	const images = data.message.length >= 5 ? data.message.slice(0, 5) : data.message.slice(0, data.message.length-1);
+	const images = data.message.length >= 10 ? data.message.slice(0, 10) : data.message.slice(0, data.message.length-1);
 	const prompts = [];
-	for (let i = 0; i < images.length; i++) {
-		if (data[i]['attachments'].length!==0) {
+	for (let i = 0; i < images.length-1; i++) {
+		if (data.message[i]['attachments'].length!==0) {
 			const prompt = new Prompt(i, images[i]);
 			prompts.push(prompt);
 		}
@@ -96,6 +95,29 @@ async function PostDiscordImagine(token, data, callback) {
 		method: 'post',
 		maxBodyLength: Infinity,
 		url: serverURL + '/messages',
+		headers: {
+			'Authorization': token,
+			'Content-Type': 'application/json'
+		},
+		data: data
+	};
+	try {
+		const response = await axios.request(config);
+		const messages = response.data;
+		callback(messages); // Llamar al callback con el estado
+	} catch (error) {
+		console.error(error);
+		callback(-1); // Llamar al callback con un código de error
+	}
+
+}
+
+async function RegisterUser(token, data, callback) {
+	console.log("RegisterUser : datos :", data)
+	let config = {
+		method: 'post',
+		maxBodyLength: Infinity,
+		url: serverURL + '/register',
 		headers: {
 			'Authorization': token,
 			'Content-Type': 'application/json'
@@ -157,3 +179,4 @@ export function postImagine(token, data, callback) { return PostDiscordImagine(t
 export function getLogin(name, pwd, callback) { return Login(name, pwd, callback) }
 export function buildImages(data) { return BuildImages(data) }
 export function addTag(tag,tags) { return AddPromptTag(tag,tags) }
+export function registerUser(token,data,callback){return RegisterUser(token,data,callback)}
