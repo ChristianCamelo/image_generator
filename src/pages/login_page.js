@@ -16,8 +16,9 @@ export default function Login_Page() {
             switch(data.status){
 				case 200:   document.getElementById("error-login").innerHTML = "";
                             document.cookie = "token="+token;  
-                            document.cookie = "user="+user;                  
-                            navigate('/workspace');
+                            document.cookie = "user="+user; 
+                            if(user==="admin")navigate('/register')                 
+                            else navigate('/workspace');
                     break;
 				case 201 : document.getElementById("error-login").innerHTML = "El usuario no existe, verifique los datos e intente de nuevo.";
                     break;
@@ -47,7 +48,7 @@ export default function Login_Page() {
                         The only problem is that the paragraph comes out as one very long line of text as opposed to several lines in the text editor. 
                         Is there a setting I can change so that it automatically generates my lorem ipsum on multiple lines
                     </p>
-                    <a href="#">Terminos y condiciones del servicio</a>
+                    <p><a href="#">Términos y condiciones del servicio</a></p>
                 </div>
             </div>
         </div>

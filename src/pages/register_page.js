@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import logo from '../images/logo.png'
 import { registerUser } from "../dependencies/commands";
-
+import Tooltip from './../components/Tooltip';
+import { useNavigate } from "react-router-dom";
 export default function Register_Page() {
 
 
@@ -119,6 +120,15 @@ export default function Register_Page() {
         { name: "watermelon color", hex: "#FF5566" },
         { name: "yellow green", hex: "#9ACD32" }
     ];
+    const navigate = useNavigate();
+
+    function exit() {
+        let Cookies = document.cookie.split(';');
+        for (var i = 0; i < Cookies.length; i++) {
+            document.cookie = Cookies[i] + "=; expires=" + new Date(0).toUTCString();
+        }
+        navigate('/login');
+    }
 
     function calcularTono(color) {
         const r = parseInt(color.hex.substr(1, 2), 16) / 255;
@@ -127,7 +137,6 @@ export default function Register_Page() {
         const max = Math.max(r, g, b);
         const min = Math.min(r, g, b);
         let hue = 0;
-
         if (max === min) {
             hue = 0;
         } else {
@@ -185,20 +194,32 @@ export default function Register_Page() {
 
         // Verificar que el nombre de usuario y la contraseña contengan solo símbolos ASCII
         if (!asciiRegex.test(username) && !asciiRegex.test(password)) {
-            console.log("El nombre de usuario debe contener solo símbolos ASCII.");
+            document.getElementById("error-register").innerText = "El nombre de usuario debe contener solo caracteres básicos."
             return;
         }
         if (!asciiRegex.test(password) || !asciiRegex.test(confirmPassword)) {
-            console.log("La contraseña debe contener solo símbolos ASCII.");
+            document.getElementById("error-register").innerText = "La contraseña debe contener solo caracteres básicos."
             return;
+        }
+        if ( password !== confirmPassword) {
+            document.getElementById("error-register").innerText = "Las contraseñas no coinciden."
+            return;
+        }
+        else{
+            document.getElementById("error-register").innerText = ""
         }
         const tokenValue = getCookie("token");
         const newUser = { username, password, materials, colors, channel };
-        // Aquí puedes usar los valores seleccionados para realizar l
-        console.log("Creando nuevo usuario: ", newUser)
 
         registerUser(tokenValue, newUser, (message) => {
             console.log(message);
+            if(message.status===201){
+                document.getElementById("register-success").style.display = "block";
+                document.getElementById("register-success").innerText= "Usuario registrado con exito"
+            }
+            else{
+                document.getElementById("error-register").innerText = message.message;
+            }
         })
     };
 
@@ -214,18 +235,25 @@ export default function Register_Page() {
     return (
         <div className="login-container">
             <div className="login-box">
+                <h1>Registro de nuevo usuario</h1>
+                <p id="register-success"></p>
                 <form id="Register-form" onSubmit={handleSubmit}>
-                    <h1>Registro de nuevo usuario</h1>
-                    <label htmlFor="reg-user">Nombre del usuario</label>
-                    <input type="text" id="reg-user" name="reg-user"></input>
-
-                    <label htmlFor="reg-pwd2">Contraseña</label>
-                    <input type="password" id="reg-pwd" name="reg-pwd2"></input>
-
-                    <label htmlFor="reg-pwd2">Repetir contraseña</label>
-                    <input type="password" id="reg-pwd2" name="reg-pwd2"></input>
-
-                    <label htmlFor="reg-colors">Colores</label>
+                <p id="error-register"></p>
+                    <Tooltip text="Nombre de inicio de sesión">
+                        <label htmlFor="reg-user">Nombre del usuario*</label>
+                    </Tooltip>
+                    <input required type="text" id="reg-user" name="reg-user"></input>
+                    <Tooltip text="Contraseña solo caracteres básicos">
+                        <label htmlFor="reg-pwd2">Contraseña*</label>
+                    </Tooltip>
+                    <input required type="password" id="reg-pwd" name="reg-pwd"></input>
+                    <Tooltip text="Repita la contraseña anterior">
+                        <label htmlFor="reg-pwd2">Repetir contraseña*</label>
+                    </Tooltip>
+                    <input required type="password" id="reg-pwd2" name="reg-pwd2"></input>
+                    <Tooltip text="Colores de la marca, seleccione entre 3 y 5, más colores pueden resultar en perder el efecto deseado">
+                        <label htmlFor="reg-colors">Colores de la marca</label>
+                    </Tooltip>
                     <div className="Colors">
                         {colorsOrdenados.map((color, index) => (
                             <div className={(selectedColors.includes(color.name) ? "Checkbox picked" : "Checkbox")} onClick={() => handleCheckboxClick(color.name)} key={index} style={{ backgroundColor: color.hex }} >
@@ -235,17 +263,20 @@ export default function Register_Page() {
                             </div>
                         ))}
                     </div>
-
-                    <label htmlFor="mats">Materiales</label>
-                    <input type="text" id="reg-mats" name="mats"></input>
-
-                    <label htmlFor="channel">Canal</label>
-                    <input type="text" id="reg-channel" name="channel"></input>
+                    <Tooltip text="Palabras clave que identifican la marca p.e. fontanería, industrial, animales, etc.">
+                        <label htmlFor="mats">Ámbito de la marca*</label>
+                    </Tooltip>
+                    <input required type="text" id="reg-mats" name="mats"></input>
+                    <Tooltip text="Id del canal de DISCORD para el usuario, asegurese de que el canal no esta siendo usado por otro usuario">
+                        <label htmlFor="channel">Id del canal de Discord*</label>
+                    </Tooltip>
+                    <input required type="text" id="reg-channel" name="channel"></input>
 
                     <button type="submit">Guardar</button>
+                    <p>Todos los campos con (*) son obligatorios. Almacena muy bien la contraseña ya que no podra ser editada más adelante.</p>
+                    <button type="submit" onClick={exit}>Salir</button>
                 </form>
             </div>
-            <p>Almacena muy bien es</p>
 
         </div>
     )

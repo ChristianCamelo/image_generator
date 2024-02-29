@@ -54,7 +54,7 @@ async function Login(name, pass, callback) {
 }
 
 async function BuildImages(data) {
-	console.log("BuildImages ", data.message);
+	//console.log("BuildImages ", data.message);
 	const images = data.message.length >= 10 ? data.message.slice(0, 10) : data.message.slice(0, data.message.length-1);
 	const prompts = [];
 	for (let i = 0; i < images.length-1; i++) {
@@ -63,13 +63,13 @@ async function BuildImages(data) {
 			prompts.push(prompt);
 		}
 	}
-	console.log(JSON.stringify(prompts));
+	console.log(JSON.stringify(prompts.length));
 	return prompts;
 }
 
 
 async function GetDiscordChannelMessages(token, callback) {
-	console.log("enviando token ", token)
+	//console.log("enviando token ", token)
 	let config = {
 		method: 'get',
 		maxBodyLength: Infinity,

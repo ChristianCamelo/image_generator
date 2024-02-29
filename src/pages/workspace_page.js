@@ -2,6 +2,7 @@ import Header from "../components/Header";
 import Canvas from "../components/Canvas";
 import { useEffect, useState } from "react";
 import { getMessages, postImagine, getStatus, buildImages } from "../dependencies/commands";
+import { useNavigate } from "react-router-dom";
 
 export default function Workspace_Page() {
 
@@ -9,6 +10,7 @@ export default function Workspace_Page() {
     const [user, setUser] = useState("");
     const [prompts, setPrompts] = useState([]);
     const [tags, setTags] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!document.cookie.split(';').length === 2) {

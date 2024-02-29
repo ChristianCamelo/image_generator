@@ -96,7 +96,8 @@ p,label {
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
-  background-color: var(--primary-color-50);
+  background: rgb(52,52,52);
+  background: radial-gradient(circle, var(--primary-color-10) 0%, var(--primary-color-50) 100%);
 }
 
 .Workspace {
@@ -131,6 +132,33 @@ p,label {
   box-sizing: border-box;
   filter: drop-shadow(0px 2px 3px var(--primary-color-20));
   overflow: auto;
+}
+
+.Tooltip {
+  position: relative;
+  display: block;
+  width: fit-content;
+}
+
+.Tooltip .Tooltiptext {
+  visibility: hidden;
+  width: 150px;
+  background-color: black;
+  color: white;
+  font-size: var(--font-S);
+  text-align: left;
+  border-radius: 6px;
+  padding: 10px;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.Tooltip:hover .Tooltiptext {
+  visibility: visible;
+  opacity: 1;
 }
 
 .History {
@@ -262,11 +290,22 @@ p,label {
   display: flex;
   flex-direction: column;
   width: fit-content;
+  align-items: center;
   height: 100%;
-  padding: 50px;
+  padding: 20px;
   box-sizing: border-box;
   background-color: var(--white);
   gap: 15px;
+}
+
+#register-success{
+  display: none;
+  color: green;
+  align-self: center;
+  background-color: var(--primary-color-20);
+  width: fit-content;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .Register {
@@ -331,6 +370,21 @@ p,label {
   background-repeat: no-repeat;
 }
 
+#creative-range{
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  padding-left: 5px;
+}
+#creative-range p{
+  margin: 0;
+  font-weight: 400;
+  display: inline;
+
+}
+
 .Tabla-btn {
   top: 0;
   z-index: 1;
@@ -375,8 +429,14 @@ p,label {
 }
 
 #error-login,
-#error-prompt {
+#error-prompt,
+#error-register{
   color: red;
+}
+
+#error-register{
+  width: 200px;
+  margin: 0;
 }
 
 #btn-download {
@@ -425,9 +485,11 @@ p,label {
   background-color: var(--white);
   padding: 50px;
   box-sizing: border-box;
+  box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
+  overflow: auto;
 }
 
 .login-container form {
@@ -458,7 +520,7 @@ button {
   font-family: var(--font-fam);
   font-size: var(--font-S);
   background-color: var(--primary-color-20);
-  color: var(--primary-color-70);
+  color: var(--primary-color);
   font-weight: 400;
   border-radius: 50px;
   border: 1px solid var(--white);
@@ -479,6 +541,7 @@ textarea,
 input {
   resize: none;
   border: none;
+  margin-top: 5px;
   background: none;
   border-bottom: 2px solid var(--primary-color-20);
   font-size: var(--font-S);
@@ -501,10 +564,10 @@ select {
   align-self: center;
 }
 
-.logo {
-  width: 50px;
-  height: 100%;
-  object-fit: cover;
+#logo {
+  font-size: 30pt;
+  font-weight: 700;
+  vertical-align: middle;
 }
 
 
