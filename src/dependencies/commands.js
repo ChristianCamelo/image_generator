@@ -14,12 +14,12 @@ function getSession() {
 const serverURL = "http://localhost:8080";
 
 const discordAPI = `https://discord.com/api/v10`;
-const MidjourneyAppId = `936929561302675456`;
-const MidjourneyVersion = `1166847114203123795`;
+const MidjourneyAppId = `-`;
+const MidjourneyVersion = `-`;
 
-const discord = `MTEzMDc0MzQ4OTU3MTg2ODc1NA.GqeO59.wJYkjErhNyhtshTGNvf6MR0-uFYy1xAcP4Z02M`;
-const server = `1204813483431034911`;
-const channel = `1204813526883897386`;
+const discord = `-AcP4Z02M`;
+const server = `-4911`;
+const channel = `-897386`;
 const postpromt = " aqua colors, ash gray, cyan colors, silver colors, metal materials, marketing ad";
 const promptparams = "realistic image, by canon 5 R.High resolution. Photorealistic lighting, 8K. Super Resolution, Megapixel, Pro Photo | 8k 35mm, 8k, depth of field --iw 0.5 --v 6.0 --ar 16:9"
 let preprompt = [];
